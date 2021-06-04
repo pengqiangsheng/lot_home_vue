@@ -1,14 +1,19 @@
 <template>
-  <div class="pie-wrapper">
-    <div @click="dialogVisible = true" :id="id" :class="className" :style="{height:height,width:width}" />
-    <el-dialog
-      :title="chartData.name"
-      :visible.sync="dialogVisible"
-      width="50%"
-      :before-close="handleClose">
-      <LineSmoothChart :chartData="chartData"/>
-    </el-dialog>
-  </div>
+  <el-col :xs="24" :sm="12" :md="8" :lg="6">
+    <div class="pie-wrapper card-wrapper" style="height: 220px">
+      <div :id="id" :class="className" :style="{height:height,width:width}" @click="dialogVisible = true" />
+      <el-dialog
+        :title="chartData.name"
+        :visible.sync="dialogVisible"
+        :width="device === 'mobile' ? '100%' : '50%'"
+        :before-close="handleClose"
+        :show-close="device != 'mobile'"
+        :close-on-click-modal="device === 'mobile'"
+      >
+        <LineSmoothChart :chart-data="chartData" :color="color" />
+      </el-dialog>
+    </div>
+  </el-col>
 </template>
 
 <script>
@@ -17,10 +22,11 @@ require('echarts/theme/macarons') // echarts theme
 import resize from './mixins/resize'
 import { randomNumber } from '@/utils'
 import LineSmoothChart from './LineSmoothChart'
+import { mapGetters } from 'vuex'
 
 export default {
-  mixins: [resize],
   components: { LineSmoothChart },
+  mixins: [resize],
   props: {
     className: {
       type: String,
@@ -49,6 +55,10 @@ export default {
     maxValue: {
       type: Number,
       default: 100
+    },
+    color: {
+      type: String,
+      default: '#039BE5' // #AFEEEE
     }
   },
   data() {
@@ -57,6 +67,9 @@ export default {
       id: `chart-pie-${randomNumber(1, 999999)}`,
       dialogVisible: false
     }
+  },
+  computed: {
+    ...mapGetters(['device'])
   },
   watch: {
     chartData: {
@@ -70,6 +83,7 @@ export default {
     this.$nextTick(() => {
       this.initChart()
     })
+    console.log(this.device)
   },
   beforeDestroy() {
     if (!this.chart) {
@@ -81,10 +95,10 @@ export default {
   methods: {
     initChart() {
       this.chart = echarts.init(document.getElementById(this.id))
-      this.setOptions({ ...this.chartData, formatter: this.formatter, maxValue: this.maxValue })
+      this.setOptions({ ...this.chartData, formatter: this.formatter, maxValue: this.maxValue, color: this.color })
       console.log(this.chartData)
     },
-    setOptions({ name, value, formatter, maxValue } = {}) {
+    setOptions({ name, value, formatter, maxValue, color } = {}) {
       this.chart.setOption({
         legend: {
           top: '5%',
@@ -115,6 +129,9 @@ export default {
                 },
                 fontSize: '30',
                 position: 'center'
+              },
+              itemStyle: {
+                color
               }
             },
             {
@@ -135,26 +152,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.pie-wrapper {
-  position: relative;
-  display: block;
-  height: 220px;
-  width: 100%;
-  margin-bottom: 10px;
-  background: var( --ha-card-background, var(--card-background-color, white) );
-  border-radius: var(--ha-card-border-radius, 4px);
-  box-shadow: var( --ha-card-box-shadow, 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12) );
-
-}
-</style>
-<style>
-  .el-dialog__header {
-    padding: 20px;
-    border-bottom: 1px solid #eee;
-  }
-  .el-dialog__body {
-    padding: 0 20px 20px 20px;
-  }
-</style>

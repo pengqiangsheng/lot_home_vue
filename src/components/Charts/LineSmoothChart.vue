@@ -1,6 +1,6 @@
 <template>
   <div class="line-smooth-wrapper">
-    <div :id="id" :class="className" :style="{height:height,width:width}" />
+    <div :id="id" :class="className" :style="{height:height,width: device === 'mobile' ? '100%' : width}" />
   </div>
 </template>
 
@@ -9,6 +9,7 @@ import * as echarts from 'echarts'
 require('echarts/theme/macarons') // echarts theme
 import resize from './mixins/resize'
 import { randomNumber } from '@/utils'
+import { mapGetters } from 'vuex'
 
 export default {
   mixins: [resize],
@@ -33,13 +34,9 @@ export default {
       type: Object,
       required: true
     },
-    formatter: {
+    color: {
       type: String,
-      default: '{c} ℃'
-    },
-    maxValue: {
-      type: Number,
-      default: 100
+      default: '#039BE5'
     }
   },
   data() {
@@ -48,6 +45,9 @@ export default {
       id: `chart-line-smooth-${randomNumber(1, 999999)}`,
       dialogVisible: false
     }
+  },
+  computed: {
+    ...mapGetters(['device'])
   },
   watch: {
     chartData: {
@@ -61,6 +61,7 @@ export default {
     this.$nextTick(() => {
       this.initChart()
     })
+    console.log(this.device)
   },
   beforeDestroy() {
     if (!this.chart) {
@@ -72,10 +73,9 @@ export default {
   methods: {
     initChart() {
       this.chart = echarts.init(document.getElementById(this.id))
-      this.setOptions({ ...this.chartData })
-      console.log(this.chartData)
+      this.setOptions({ ...this.chartData, color: this.color })
     },
-    setOptions({ historyData } = {}) {
+    setOptions({ historyData, color } = {}) {
       this.chart.setOption({
         xAxis: {
           type: 'category',
@@ -87,9 +87,12 @@ export default {
         series: [{
           data: [34, 27, 30, 35, 33, 32, 31],
           type: 'line',
+          itemStyle: {
+            color
+          },
           smooth: true
         }]
-    })
+      })
     },
     handleClose() {
       this.dialogVisible = false

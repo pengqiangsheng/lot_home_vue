@@ -1,25 +1,18 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">name: {{ name }}</div>
-    <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
+    <div class="dashboard-text card-wrapper">name: {{ name }}</div>
+    <el-row class="card-wrapper" style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
       <line-chart :chart-data="lineChartData" />
     </el-row>
     <el-row :gutter="10">
-      <el-col :xs="12" :sm="12" :md="8" :lg="6">
-        <PieChart :chart-data="tempature" />
-      </el-col>
-      <el-col :xs="12" :sm="12" :md="8" :lg="6">
-        <PieChart :chart-data="tempature" />
-      </el-col>
-      <el-col :xs="12" :sm="12" :md="8" :lg="6">
-        <PieChart :chart-data="tempature" />
-      </el-col>
-      <el-col :xs="12" :sm="12" :md="8" :lg="6">
-        <PieChart :chart-data="tempature" />
-      </el-col>
-      <el-col :xs="12" :sm="12" :md="8" :lg="6">
-        <PieChart :chart-data="tempature" />
-      </el-col>
+      <PieChart :chart-data="tempature" />
+      <PieChart :chart-data="tempature" />
+      <PieChart :chart-data="humitiy" :color="'#AFEEEE'" />
+      <PieChart :chart-data="tempature" />
+      <PieChart :chart-data="tempature" />
+    </el-row>
+    <el-row :gutter="10">
+      <MySwitch v-model="value" />
     </el-row>
   </div>
 </template>
@@ -28,6 +21,7 @@
 import { mapGetters } from 'vuex'
 import LineChart from './LineChart'
 import PieChart from '@/components/Charts/PieChart'
+import MySwitch from '@/components/Switch'
 
 const lineChartData = {
   newVisitis: {
@@ -50,14 +44,19 @@ const lineChartData = {
 
 export default {
   name: 'Dashboard',
-  components: { LineChart, PieChart },
+  components: { LineChart, PieChart, MySwitch },
   data() {
     return {
       lineChartData: lineChartData.newVisitis,
       tempature: {
         name: '温度',
         value: 30
-      }
+      },
+      humitiy: {
+        name: '湿度',
+        value: 80
+      },
+      value: true
     }
   },
   computed: {
@@ -69,15 +68,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .card-wrapper {
-    position: relative;
-    display: block;
-    height: 200px;
-    width: 350px;
-    background: var( --ha-card-background, var(--card-background-color, white) );
-    border-radius: var(--ha-card-border-radius, 4px);
-    box-shadow: var( --ha-card-box-shadow, 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12) );
-  }
 .dashboard {
   &-container {
     margin: 30px;
@@ -85,6 +75,7 @@ export default {
   &-text {
     font-size: 30px;
     line-height: 46px;
+    padding: 10px;
   }
 }
 </style>
