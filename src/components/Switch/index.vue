@@ -2,7 +2,7 @@
   <el-col :xs="24" :sm="12" :md="8" :lg="6">
     <div class="switch-wrapper card-wrapper">
       <div class="title-wrapper">灯</div>
-      <el-row v-for="item in switchList" :key="item.name"  type="flex" justify="space-between" class="row-wrapper">
+      <el-row v-for="item in switchList" :key="item.name" type="flex" justify="space-between" class="row-wrapper">
         <span>{{ item.name }}</span>
         <el-switch
           v-model="item.value"

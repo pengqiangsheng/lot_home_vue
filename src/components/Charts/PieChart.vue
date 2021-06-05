@@ -2,17 +2,47 @@
   <el-col :xs="24" :sm="12" :md="8" :lg="6">
     <div class="pie-wrapper card-wrapper" style="height: 220px">
       <div :id="id" :class="className" :style="{height:height,width:width}" @click="dialogVisible = true" />
-      <el-dialog
-        :title="chartData.name"
-        :visible.sync="dialogVisible"
-        :width="device === 'mobile' ? '100%' : '50%'"
-        :before-close="handleClose"
-        :show-close="device != 'mobile'"
-        :close-on-click-modal="device === 'mobile'"
-      >
-        <LineSmoothChart :chart-data="chartData" :color="color" />
-      </el-dialog>
+      <div class="icon-wrapper">
+        <i class="el-icon-edit" @click="editSwitch = true" />
+        <i class="el-icon-delete" @click="handleDel" />
+      </div>
     </div>
+    <!-- 折线图 -->
+    <el-dialog
+      :title="chartData.name"
+      :visible.sync="dialogVisible"
+      :width="device === 'mobile' ? '100%' : '50%'"
+      :before-close="handleClose"
+      :show-close="device != 'mobile'"
+      :close-on-click-modal="device === 'mobile'"
+    >
+      <LineSmoothChart :chart-data="chartData" :color="color" />
+    </el-dialog>
+    <!-- 编辑 -->
+    <!-- <el-dialog
+      :title="'编辑'"
+      :visible.sync="editSwitch"
+      :width="device === 'mobile' ? '100%' : '50%'"
+      :before-close="handleClose"
+      :show-close="device != 'mobile'"
+      :close-on-click-modal="device === 'mobile'"
+    >
+      <el-form ref="form" :model="form" label-width="80px">
+        <el-form-item label="名称">
+          <el-input v-model="form.name" />
+        </el-form-item>
+        <el-form-item label="类型">
+          <el-select v-model="form.type" placeholder="请选择卡片类型">
+            <el-option
+              v-for="item in typeList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+      </el-form>
+    </el-dialog> -->
   </el-col>
 </template>
 
@@ -65,7 +95,8 @@ export default {
     return {
       chart: null,
       id: `chart-pie-${randomNumber(1, 999999)}`,
-      dialogVisible: false
+      dialogVisible: false,
+      editSwitch: false
     }
   },
   computed: {
@@ -148,7 +179,27 @@ export default {
     },
     handleClose() {
       this.dialogVisible = false
+    },
+    handleEdit() {
+
+    },
+    handleDel() {
+      this.$emit('del')
     }
   }
 }
 </script>
+<style lang="scss" scoped>
+.icon-wrapper {
+  position: absolute;
+  top: 10px;
+  right: 5px;
+  i {
+    font-size: 20px;
+    margin-right: 5px;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+</style>

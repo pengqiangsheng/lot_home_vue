@@ -1,5 +1,5 @@
 <template>
-  <div :class="className" :style="{height:height,width:width}" />
+  <div :class="[className, 'card-wrapper']" :style="{height:height,width:width}" />
 </template>
 
 <script>
@@ -12,7 +12,7 @@ export default {
   props: {
     className: {
       type: String,
-      default: 'chart'
+      default: 'line-chart-wrapper-1'
     },
     width: {
       type: String,
@@ -134,3 +134,8 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.line-chart-wrapper-1 {
+  padding: 16px;
+}
+</style>
